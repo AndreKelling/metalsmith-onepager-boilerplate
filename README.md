@@ -47,6 +47,7 @@ It's possible to configure the order the sections get displayed with the `order`
 #### Images
 
 Original images shall get put into `images` directory. They get transpiled into `build/img`. To use an image inline properly please use the shortcode `[img src="dropworks.jpg" alt="a sample image"][/img]` wich will additionally render for an optimum output.
+Images get formatted to `.webp`. This is actually just tested with `.jpg` and `.png`!
 
 ## Features and Defaults
 

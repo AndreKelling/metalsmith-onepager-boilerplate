@@ -9,6 +9,7 @@ var sass = require('gulp-sass');
 var browserify = require('browserify');
 var imagemin = require('gulp-imagemin');
 var newer = require('gulp-newer');
+var webp = require('gulp-webp');
 var uglify = require('gulp-uglify');
 var mode = require('gulp-mode')({
     modes: ["production", "development"],
@@ -42,7 +43,7 @@ gulp.task('watch', function() {
   gulp.watch('./src/**/**/*.html', gulp.series('metalsmith', 'browser-sync'));
   gulp.watch(['./js/app.js', './js/vendor/**/*.js'], gulp.series('eslint', 'browserify', 'metalsmith', 'browser-sync'));
   gulp.watch('./scss/*.scss', gulp.series('css', 'metalsmith', 'browser-sync'));
-  gulp.watch('./images/**/*', gulp.series('images', 'browser-sync'));
+  gulp.watch('./images/**/*', gulp.series('images', 'webp', 'browser-sync'));
 });
 
 gulp.task('browser-sync', function(done) {
@@ -134,6 +135,17 @@ gulp.task('images', function () {
 });
 
 /**
+ * Optimize and create images
+ *
+ */
+gulp.task('webp', function () {
+    return gulp.src('./build/img/**/*')
+        .pipe(newer('./build/img/'))
+        .pipe(webp())
+        .pipe(gulp.dest('./build/img/'));
+});
+
+/**
  * Start the Metalsmith build.
  *
  */
@@ -157,7 +169,7 @@ gulp.task('cleanMaps', function (done) {
  * The build task.
  *
  * */
-gulp.task('build', gulp.parallel('images', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')));
+gulp.task('build', gulp.series(gulp.parallel('images', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')), 'webp'));
 
 /**
  * The dev task.

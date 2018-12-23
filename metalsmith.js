@@ -10,6 +10,7 @@ var shortcodes = require('metalsmith-shortcodes-replace');
 var handlebars = require('handlebars');
 var debug = require('metalsmith-debug');
 var glob = require('glob');
+var path = require('path');
 
 /**
  * Add custom helpers to handlebars using the global handlebars instance
@@ -73,11 +74,21 @@ module.exports = Metalsmith(__dirname)
     .use(shortcodes({
         shortcodes: [
             {
-                clean_cache: true,
+                clean_cache: true, // @todo: activate cache, set false or remove
                 name: 'img',
                 replace: function (params, match) {
-                    console.log(params, match);
-                    return '<img src="/img/'+params.src+'" alt="'+params.alt+'" />'
+                    //console.log(params, match);
+                    // @todo: add breakpoints and different image sizes
+                    const fileName =path.parse(params.src).name; // remove file extension https://stackoverflow.com/a/31615711
+                    return '<picture>' +
+                        '<source\n' +
+                        '   srcset="/img/'+fileName+'.webp"' +
+                        '   type="image/webp" >' +
+                        '<img' +
+                        '   src="/img/'+params.src+'"' +
+                        '   type="image/jpeg"' +
+                        '   alt="'+params.alt+'">' +
+                        '</picture>'
                 },
             }
         ]
