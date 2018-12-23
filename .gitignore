@@ -17,3 +17,4 @@ node_modules
 
 # Don't commit the Metalsmith build directory
 build
+cache.shortcodes.json

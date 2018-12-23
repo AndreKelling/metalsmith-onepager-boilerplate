@@ -6,6 +6,7 @@ var rootPath = require('metalsmith-rootpath');
 var ignore  = require('metalsmith-ignore');
 var permalinks  = require('metalsmith-permalinks');
 var collections = require('metalsmith-collections');
+var shortcodes = require('metalsmith-shortcodes-replace');
 var handlebars = require('handlebars');
 var debug = require('metalsmith-debug');
 var glob = require('glob');
@@ -67,6 +68,19 @@ module.exports = Metalsmith(__dirname)
 
     .use(permalinks({
         relative: 'on'
+    }))
+
+    .use(shortcodes({
+        shortcodes: [
+            {
+                clean_cache: true,
+                name: 'img',
+                replace: function (params, match) {
+                    console.log(params, match);
+                    return '<img src="/img/'+params.src+'" alt="'+params.alt+'" />'
+                },
+            }
+        ]
     }))
 
     // Process handlebars partials

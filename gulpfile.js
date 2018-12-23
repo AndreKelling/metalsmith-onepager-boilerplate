@@ -7,6 +7,8 @@ var concat = require('gulp-concat');
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var browserify = require('browserify');
+var imagemin = require('gulp-imagemin');
+var newer = require('gulp-newer');
 var uglify = require('gulp-uglify');
 var mode = require('gulp-mode')({
     modes: ["production", "development"],
@@ -40,6 +42,7 @@ gulp.task('watch', function() {
   gulp.watch('./src/**/**/*.html', gulp.series('metalsmith', 'browser-sync'));
   gulp.watch(['./js/app.js', './js/vendor/**/*.js'], gulp.series('eslint', 'browserify', 'metalsmith', 'browser-sync'));
   gulp.watch('./scss/*.scss', gulp.series('css', 'metalsmith', 'browser-sync'));
+  gulp.watch('./images/**/*', gulp.series('images', 'browser-sync'));
 });
 
 gulp.task('browser-sync', function(done) {
@@ -104,13 +107,39 @@ gulp.task('browserify', function (done) {
   done();
 });
 
+
+/**
+ * Optimize and create images
+ *
+ */
+gulp.task('images', function () {
+    return gulp.src('./images/**/*')
+        .pipe(newer('./build/img'))
+        .pipe(
+            imagemin([
+                imagemin.gifsicle({ interlaced: true }),
+                imagemin.jpegtran({ progressive: true }),
+                imagemin.optipng({ optimizationLevel: 5 }),
+                imagemin.svgo({
+                    plugins: [
+                        {
+                            removeViewBox: false,
+                            collapseGroups: true
+                        }
+                    ]
+                })
+            ])
+        )
+        .pipe(gulp.dest('./build/img'));
+});
+
 /**
  * Start the Metalsmith build.
  *
  */
 gulp.task('metalsmith', function(done){
   // delete build files for cleanup
-  del(['build/index.html','build/*/**','!build','!build/images','!build/images/**','!build/fonts','!build/fonts/**']);
+  del(['build/index.html','build/*/**','!build','!build/img','!build/img/**','!build/fonts','!build/fonts/**']);
 
   metalsmith.build(function(err, files){
     if (err) throw err;
@@ -128,7 +157,7 @@ gulp.task('cleanMaps', function (done) {
  * The build task.
  *
  * */
-gulp.task('build', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith'));
+gulp.task('build', gulp.parallel('images', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')));
 
 /**
  * The dev task.

@@ -44,6 +44,10 @@ There is currently the collection of all sections of the onepager under `src/one
 
 It's possible to configure the order the sections get displayed with the `order` index variable given to the single entries.
 
+#### Images
+
+Original images shall get put into `images` directory. They get transpiled into `build/img`. To use an image inline properly please use the shortcode `[img src="dropworks.jpg" alt="a sample image"][/img]` wich will additionally render for an optimum output.
+
 ## Features and Defaults
 
 These are the current defaults, but you can swap these out for anything you want.
