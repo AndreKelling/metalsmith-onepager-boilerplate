@@ -1,0 +1,27 @@
+@import "variables";
+@import "mixins/mixins-master";
+
+/*--------------------------------------------------------------
+# Normalize
+--------------------------------------------------------------*/
+@import "normalize";
+
+a {
+	color: $color__red;
+	text-decoration: none;
+}
+
+a:hover {
+	color: $color__red;
+	text-decoration: underline;
+}
+
+ul li {
+	list-style: none;
+}
+
+section {
+	padding: 1rem;
+	margin-bottom: 1rem;
+	background-color: $color__grey-light;
+}

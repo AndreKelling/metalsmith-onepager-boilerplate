@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="/styles.min.css">
+</head>
+
+<body>
+
+<h3>PAGE TEMPLATE</h3>
+
+{{! Pass the metalsmith metadata content to metalsmith-rootpath }}
+{{> navigation this }}
+
+{{{ contents }}}
+
+<script src="/app.bundle.js" async></script>
+
+</body>
+</html>

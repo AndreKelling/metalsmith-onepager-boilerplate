@@ -1,0 +1,19 @@
+# Misc file system and IDE configs
+.DS_Store
+.idea
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+node_modules
+
+# Don't commit the Metalsmith build directory
+build
