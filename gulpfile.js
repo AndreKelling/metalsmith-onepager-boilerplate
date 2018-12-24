@@ -9,6 +9,7 @@ var sass = require('gulp-sass');
 var browserify = require('browserify');
 var imagemin = require('gulp-imagemin');
 var newer = require('gulp-newer');
+var imageResize = require('gulp-image-resize');
 var webp = require('gulp-webp');
 var uglify = require('gulp-uglify');
 var mode = require('gulp-mode')({
@@ -16,6 +17,7 @@ var mode = require('gulp-mode')({
     default: "development",
     verbose: false
 });
+var rename = require("gulp-rename");
 var stylelint = require('gulp-stylelint');
 var eslint = require('gulp-eslint');
 var source = require('vinyl-source-stream');
@@ -111,13 +113,34 @@ gulp.task('browserify', function (done) {
 
 /**
  * Optimize and create images
+ * https://gist.github.com/ryantbrown/239dfdad465ce4932c81
  *
  */
-gulp.task('images', function () {
-    return gulp.src('./images/**/*')
-        .pipe(newer('./build/img'))
-        .pipe(
-            imagemin([
+
+var images = [
+    { name: 'xs', width: 30 },
+    { name: 's', width: 150 },
+    { name: 'm', width: 500 },
+    { name: 'l', width: 800 },
+    { name: 'xl', width: 1200 }
+];
+
+// @todo: do not create bigger images unresized, how to check if bigger images exist on metalsmith task?
+gulp.task('images', function (done) {
+
+    // loop through image groups
+    images.forEach(function(type){
+
+        // build the resize object
+        var resize_settings = {
+            width: type.width
+        };
+
+        gulp.src('./images/**/*')
+            //.pipe(newer('./build/img/'))
+            .pipe(imageResize(resize_settings))
+
+            .pipe(imagemin([
                 imagemin.gifsicle({ interlaced: true }),
                 imagemin.jpegtran({ progressive: true }),
                 imagemin.optipng({ optimizationLevel: 5 }),
@@ -129,18 +152,21 @@ gulp.task('images', function () {
                         }
                     ]
                 })
-            ])
-        )
-        .pipe(gulp.dest('./build/img'));
+            ]))
+
+            .pipe(rename(function (path) { path.basename += '-'+ type.name; }))
+            .pipe(gulp.dest('./build/img/'));
+    });
+    done();
 });
 
 /**
- * Optimize and create images
+ * create webp images
  *
  */
 gulp.task('webp', function () {
     return gulp.src('./build/img/**/*')
-        .pipe(newer('./build/img/'))
+       // .pipe(newer('./build/img/'))
         .pipe(webp())
         .pipe(gulp.dest('./build/img/'));
 });
@@ -169,7 +195,7 @@ gulp.task('cleanMaps', function (done) {
  * The build task.
  *
  * */
-gulp.task('build', gulp.series(gulp.parallel('images', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')), 'webp'));
+gulp.task('build', gulp.parallel(gulp.series('images', 'webp'), gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')));
 
 /**
  * The dev task.

@@ -79,15 +79,31 @@ module.exports = Metalsmith(__dirname)
                 replace: function (params, match) {
                     //console.log(params, match);
                     // @todo: add breakpoints and different image sizes
-                    const fileName =path.parse(params.src).name; // remove file extension https://stackoverflow.com/a/31615711
+                    const fileParse = path.parse(params.src);
+                    const fileName = '/img/' + fileParse.name; // remove file extension https://stackoverflow.com/a/31615711
+                    const fileExt = fileParse.ext;
+                    //console.log(fileParse);
+                    // @todo: add noscript image
                     return '<picture>' +
                         '<source\n' +
-                        '   srcset="/img/'+fileName+'.webp"' +
+                        '   media="(min-width: 768px)"' +
+                        '   data-srcset="'+fileName+'-l.webp 1x, '+fileName+'-xl.webp 2x"' +
+                        '   type="image/webp" >' +
+                        '<source\n' +
+                        '   media="(min-width: 500px)"' +
+                        '   data-srcset="'+fileName+'-m.webp 1x, '+fileName+'-l.webp 2x"' +
+                        '   type="image/webp" >' +
+                        '<source\n' +
+                        '   data-srcset="'+fileName+'-s.webp 1x, '+fileName+'-m.webp 2x"' +
                         '   type="image/webp" >' +
                         '<img' +
-                        '   src="/img/'+params.src+'"' +
-                        '   type="image/jpeg"' +
-                        '   alt="'+params.alt+'">' +
+                        '   data-srcset="'+fileName+'-m.'+fileExt+' 500w,' +
+                        '   '+fileName+'-l.'+fileExt+' 768w,' +
+                        '   '+fileName+'-xl.'+fileExt+' 1200w"' +
+                        '   data-src="'+fileName+'-xs.'+fileExt+'"' +
+                      //  '   type="image/jpeg"' +
+                        '   alt="'+params.alt+'"' +
+                        '   class="lazyload">' +
                         '</picture>'
                 },
             }

@@ -57,6 +57,7 @@ These are the current defaults, but you can swap these out for anything you want
 - **Easy Template Helper Integration**: Any node modules dropped into `layouts/helpers` will automatically be available to your Handlebars templates  
 - **Browserify:** [Browserify](http://browserify.org/) your javascript source automatically
 - **Unit Testing:** via [Jest](https://github.com/facebook/jest)
+- **Responsive Images** picture sourcesets optimized with lazy loading [lazysizes](https://github.com/aFarkas/lazysizes)
 
 #### Dependency
 
