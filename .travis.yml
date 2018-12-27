@@ -1,6 +1,10 @@
 language: node_js
 node_js:
   - '6'
+addons:
+  apt:
+    packages:
+    - graphicsmagick
 install:
   - npm install -g gulp-cli
   - npm install
