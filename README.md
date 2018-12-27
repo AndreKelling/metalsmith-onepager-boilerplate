@@ -65,6 +65,10 @@ These are the current defaults, but you can swap these out for anything you want
 
 Fix for duplicate output of collections content when running multiple times metalsmith build while dev
 
+#### Issues
+
+gulp image task not really nice working. this is the reason why i run the `gulp webp` task after the `gulp build` task with `npm run build`.
+
 ## License
 
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)

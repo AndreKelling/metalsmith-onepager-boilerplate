@@ -18,6 +18,7 @@ var mode = require('gulp-mode')({
     verbose: false
 });
 var rename = require("gulp-rename");
+// var clonesink = require('gulp-clone').sink();
 var stylelint = require('gulp-stylelint');
 var eslint = require('gulp-eslint');
 var source = require('vinyl-source-stream');
@@ -110,7 +111,6 @@ gulp.task('browserify', function (done) {
   done();
 });
 
-
 /**
  * Optimize and create images
  * https://gist.github.com/ryantbrown/239dfdad465ce4932c81
@@ -129,16 +129,22 @@ var images = [
 gulp.task('images', function (done) {
 
     // loop through image groups
-    images.forEach(function(type){
-
+    images.map((type) => {
         // build the resize object
         var resize_settings = {
             width: type.width
         };
 
         gulp.src('./images/**/*')
-            //.pipe(newer('./build/img/'))
+            .pipe(rename(function (path) {
+                path.basename += '-' + type.name;
+            }))
+            .pipe(newer('./build/img/'))
             .pipe(imageResize(resize_settings))
+
+            // .pipe(clonesink) not working
+            // .pipe(webp())
+            // .pipe(clonesink.tap()) // close stream and send both formats to dist
 
             .pipe(imagemin([
                 imagemin.gifsicle({ interlaced: true }),
@@ -153,20 +159,20 @@ gulp.task('images', function (done) {
                     ]
                 })
             ]))
-
-            .pipe(rename(function (path) { path.basename += '-'+ type.name; }))
-            .pipe(gulp.dest('./build/img/'));
+            .pipe(gulp.dest('./build/img/'))
     });
+
     done();
 });
 
 /**
  * create webp images
+ * is not working in series. not all images get processed, might be an issue with gulp.
  *
  */
 gulp.task('webp', function () {
     return gulp.src('./build/img/**/*')
-       // .pipe(newer('./build/img/'))
+        //.pipe(newer('./build/img/'))
         .pipe(webp())
         .pipe(gulp.dest('./build/img/'));
 });
@@ -195,7 +201,7 @@ gulp.task('cleanMaps', function (done) {
  * The build task.
  *
  * */
-gulp.task('build', gulp.parallel(gulp.series('images', 'webp'), gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')));
+gulp.task('build', gulp.parallel('images', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')));
 
 /**
  * The dev task.
