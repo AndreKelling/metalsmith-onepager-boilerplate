@@ -42,10 +42,9 @@ gulp.task('watch', function() {
       baseDir: destinationDir
     }
   });
-  gulp.watch('./layouts/**/**/*.hbs', gulp.series('metalsmith', 'browser-sync'));
-  gulp.watch('./src/**/**/*.html', gulp.series('metalsmith', 'browser-sync'));
-  gulp.watch(['./js/app.js', './js/vendor/**/*.js'], gulp.series('eslint', 'browserify', 'metalsmith', 'browser-sync'));
-  gulp.watch('./scss/*.scss', gulp.series('css', 'metalsmith', 'browser-sync'));
+  gulp.watch(['./layouts/**/**/*.hbs', './src/**/**/*.html'], gulp.series('metalsmith', 'browser-sync'));
+  gulp.watch(['./js/app.js', './js/vendor/**/*.js'], gulp.series('eslint', 'browserify', 'browser-sync'));
+  gulp.watch('./scss/*.scss', gulp.series('css', 'browser-sync'));
   gulp.watch('./images/**/*', gulp.series('images', 'webp', 'browser-sync'));
 });
 
@@ -69,7 +68,7 @@ gulp.task('css', function() {
     .pipe(mode.development(sourcemaps.init({loadMaps: true})))
     .pipe(sass().on('error', sass.logError))
     .pipe(mode.production(minifycss()))
-    .pipe(concat("styles.min.css"))
+    .pipe(concat("style.css"))
     .pipe(mode.development(sourcemaps.write('.')))
     .pipe(gulp.dest("./build"));
 });
@@ -183,7 +182,7 @@ gulp.task('webp', function () {
  */
 gulp.task('metalsmith', function(done){
   // delete build files for cleanup
-  del(['build/index.html','build/*/**','!build','!build/img','!build/img/**','!build/fonts','!build/fonts/**']);
+  del(['build/index.html','build/**/*','!build','!build/img','!build/img/**','!build/fonts','!build/fonts/**']);
 
   metalsmith.build(function(err, files){
     if (err) throw err;
@@ -192,16 +191,11 @@ gulp.task('metalsmith', function(done){
   });
 });
 
-gulp.task('cleanMaps', function (done) {
-    del(['build/**/*.map']);
-    done();
-});
-
 /**
  * The build task.
  *
  * */
-gulp.task('build', gulp.parallel('images', gulp.series('cleanMaps', 'css', 'eslint', 'browserify', 'metalsmith')));
+gulp.task('build', gulp.parallel('images', gulp.series('metalsmith', 'css', 'eslint', 'browserify')));
 
 /**
  * The dev task.

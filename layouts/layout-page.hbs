@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>{{ title }}</title>
 
-    <link rel="stylesheet" href="/styles.min.css">
+    <link rel="stylesheet" href="/style.css?v={{ version }}">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 
 {{{ contents }}}
 
-<script src="/app.bundle.js" async></script>
+<script src="/app.bundle.js?v={{ version }}" async></script>
 
 </body>
 </html>

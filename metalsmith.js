@@ -55,7 +55,9 @@ module.exports = Metalsmith(__dirname)
                 "Keywords",
                 "Here"
             ]
-        }})
+        },
+        "version": require('./package.json').version
+    })
 
     // Expose `rootPath` to each file
     .use(rootPath())

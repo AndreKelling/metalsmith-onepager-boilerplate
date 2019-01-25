@@ -2,6 +2,8 @@
 
 > A starter template for [Metalsmith](https://github.com/segmentio/metalsmith) + [Gulp](https://github.com/gulpjs/gulp) + [Jest](https://github.com/facebook/jest) projects.
 
+Build created [Demo Site](http://metalsmith-onepager.andrekelling.de/).
+
 Hardly inspired by [metalsmith-gulp-boilerplate](https://github.com/radiovisual/metalsmith-gulp-boilerplate).
 ## Installation
 
@@ -48,6 +50,10 @@ It's possible to configure the order the sections get displayed with the `order`
 
 Original images shall get put into `images` directory. They get transpiled into `build/img`. To use an image inline properly please use the shortcode `[img src="dropworks.jpg" alt="a sample image"][/img]` wich will additionally render for an optimum output.
 Images get formatted to `.webp`. This is actually just tested with `.jpg` and `.png`!
+
+#### Cache Busting
+
+Raise package.json version for proper cache busting of CSS and JS via metalsmith meta property `version`.
 
 ## Features and Defaults
 
